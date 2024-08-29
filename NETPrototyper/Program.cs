@@ -2,6 +2,7 @@ using NETProtoyper;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
+using NETProtoyper.Interfaces;
 
 
 
@@ -45,12 +46,18 @@ namespace NETPrototyper
                 })
                 .Build();
 
+
             if (runOneTime)
             {
-                //var process = host.Services.GetRequiredService<IProcess>();
+                Console.WriteLine("Run Process Once");
+                
+                var process = host.Services.GetRequiredService<IProcess>();
+                await process.RunAsync();
             }
             else
             {
+                Console.WriteLine("Run Process Once Every Interval");
+                
                 await host.RunAsync();
             }
         }
