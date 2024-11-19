@@ -1,4 +1,6 @@
-﻿using Sample.Core.Constants;
+﻿using NETProtoyper.Interfaces;
+using NETProtoyper.Services;
+using Sample.Core.Constants;
 using Sample.Core.Interfaces;
 using Sample.Infrastructure.Data;
 using System;
@@ -15,13 +17,15 @@ namespace NETProtoyper
         {
             try
             {
-                services.AddSingleton(configuration.Get<WorkerSettings>());
+                services.AddSingleton(configuration.GetSection("WorkerSettings").Get<WorkerSettings>());
+                services.AddTransient<IPrototypeLogger, PrototypeLogger>();
+                services.AddTransient<IProcess, Process>();
 
                 services.AddSingleton(new DBConnectionSettings()
                 {
                     MSSQLConnectionString = Environment.GetEnvironmentVariable("DBConnectionSettings:MSSQLConnectionString"),
-                    MSSQLCommandTimeOut = Environment.GetEnvironmentVariable("DBConnectionSettings:MSSQLCommandTimeOut").Length > 0 ? 
-                                            Convert.ToInt32(Environment.GetEnvironmentVariable("DBConnectionSettings:MSSQLCommandTimeOut")) : 
+                    MSSQLCommandTimeOut = Environment.GetEnvironmentVariable("DBConnectionSettings:MSSQLCommandTimeOut").Length > 0 ?
+                                            Convert.ToInt32(Environment.GetEnvironmentVariable("DBConnectionSettings:MSSQLCommandTimeOut")) :
                                             null,
                     MongoDBConnection = Environment.GetEnvironmentVariable("DBConnectionSettings:MongoDBConnection"),
                     MongoDBName = Environment.GetEnvironmentVariable("DBConnectionSettings:MongoDBName"),
@@ -30,7 +34,7 @@ namespace NETProtoyper
 
                 services.AddTransient<IMSSQLDBAcess, MSSQLDBContext>();
 
-
+                services.AddHostedService<Worker>();
             }
             catch (Exception ex) 
             { 

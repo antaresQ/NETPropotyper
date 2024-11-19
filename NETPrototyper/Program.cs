@@ -25,7 +25,7 @@ namespace NETPrototyper
 
                     Console.WriteLine("Environment: {0}", name);
 
-                    var appsettingsFileName = string.Format("apsettings{0}.json", (name?.Length >0) ? $".{name.ToLower()}" : string.Empty);
+                    var appsettingsFileName = string.Format("appsettings{0}.json", (name?.Length >0) ? $".{name.ToLower()}" : string.Empty);
 
                     Console.WriteLine("Using Configuration: {0}", appsettingsFileName);
 
@@ -42,7 +42,7 @@ namespace NETPrototyper
                 })
                 .ConfigureServices((hostBuilderContext, services) =>
                 {
-                    services.AddHostedService<Worker>();
+                    ConfigureServices.Configure(services, hostBuilderContext.Configuration);
                 })
                 .Build();
 
